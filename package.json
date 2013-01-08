@@ -1,8 +1,12 @@
 {
-  "name": "palaver-chat",
+  "name": "chat.palaver.io",
   "description": "example multi-room chat application build with palaver.io",
   "version": "0.0.1",
   "dependencies": {
+    "palaver.io":
+    "https://github.com/ssboisen/palaver.io/tarball/master",
+    "palaver.io-mongorepo":
+    "https://github.com/ssboisen/palaver.io-mongorepo/tarball/master",
     "express": "3.x",
     "jade": ">= 0.0.1",
     "socket.io": "0.9.13",

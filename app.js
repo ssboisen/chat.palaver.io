@@ -15,7 +15,7 @@ var express = require('express'),
     passport = require('passport'),
     flash = require('connect-flash'),
     mongoDb = require('mongojs')(mongoUrl),
-    utils = require('./utils'),
+    utils = require('./lib/utils'),
     Palaver = require('../../');
 
 
