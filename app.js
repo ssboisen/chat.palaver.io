@@ -3,9 +3,9 @@ var express = require('express'),
     http = require('http'),
     app = express(),
     sessionSecret = "palaver-chat is the best",
-    sessionKey = "palaver-chat.sid",
+    sessionKey = "chat.palaver.io.sid",
     cookieParser = express.cookieParser(sessionSecret),
-    mongoUrl = 'mongodb://<user>:<password>@<host>:<port>/palaver',
+    mongoUrl = process.env.MONGOURL || 'mongodb://localhost:27017/palaver',
     MongoStore = require('connect-mongo')(express),
     sessionStore = new MongoStore({
         url: mongoUrl
@@ -14,10 +14,10 @@ var express = require('express'),
     io = require('socket.io').listen(server),
     passport = require('passport'),
     flash = require('connect-flash'),
-    mongoDb = require('mongojs')(mongoUrl),
     utils = require('./lib/utils'),
-    Palaver = require('../../');
-
+    PalaverMongoChatRepository = require('palaver.io-mongorepo')(mongoUrl)
+    authSetup = require('./lib/authSetup'),
+    Palaver = require('palaver.io');
 
 // Configuration
 app.configure(function(){
@@ -53,11 +53,17 @@ app.get('/login', routes.login );
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true  }));
 
-Palaver(io, passport, {
-    db: mongoDb,
+Palaver(io, {
+    chatRepository: PalaverMongoChatRepository,
     sessionStore: sessionStore,
     sessionKey: sessionKey,
     sessionSecret: sessionSecret
+});
+
+authSetup(passport, new PalaverMongoChatRepository(), io, {
+  sessionKey: sessionKey,
+  sessionStore: sessionStore,
+  sessionSecret: sessionSecret
 });
 
 server.listen(process.env.PORT || 3000, process.env.IP || "127.0.0.1")
