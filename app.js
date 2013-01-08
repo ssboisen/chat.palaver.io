@@ -54,7 +54,7 @@ app.get('/login', routes.login );
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true  }));
 
 Palaver(io, {
-    chatRepository: PalaverMongoChatRepository,
+    chatRepository: new PalaverMongoChatRepository(),
     sessionStore: sessionStore,
     sessionKey: sessionKey,
     sessionSecret: sessionSecret
