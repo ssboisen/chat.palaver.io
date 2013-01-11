@@ -1,7 +1,10 @@
 var express = require('express'),
     routes = require('./routes'),
+    _ = require('underscore'),
+    Q = require('q'),
     http = require('http'),
     app = express(),
+    crypto = require('crypto'),
     sessionSecret = "palaver-chat is the best",
     sessionKey = "chat.palaver.io.sid",
     cookieParser = express.cookieParser(sessionSecret),
@@ -17,13 +20,15 @@ var express = require('express'),
     utils = require('./lib/utils'),
     PalaverMongoChatRepository = require('palaver.io-mongorepo')(mongoUrl)
     authSetup = require('./lib/authSetup'),
-    Palaver = require('palaver.io');
+    Palaver = require('palaver.io'),
+    users = [ ],
+    memRepo = new Palaver.MemoryChatRepository([], users);
 
 // Configuration
 app.configure(function(){
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
-    app.use(express.logger());
+    //    app.use(express.logger());
     app.use(cookieParser);
     app.use(express.bodyParser());
     app.use(express.methodOverride());
@@ -49,21 +54,38 @@ app.get('/logout', utils.ensureAuthenticated, function(req, res){
     req.logout();
     res.redirect('/');
 });
-app.get('/login', routes.login );
 
+app.get('/register', routes.register );
+app.post('/register', function (req,res) {
+    routes.doRegister(req, res, function (username) {
+        return _.find(users, function (user) { return user.username === username });
+    }, function (username, password) {
+        var deferred = Q.defer();
+        var salt = crypto.randomBytes(8).toString('hex');
+        crypto.pbkdf2(password, salt, 1000, 20, deferred.makeNodeResolver());
+        
+        return deferred.promise.then( function(derivedKey) {
+            var user = { username: username, salt: salt, password: derivedKey }
+            users.push(user);
+            return user;
+        });
+    });
+});
+
+app.get('/login', routes.login );
 app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true  }));
 
 Palaver(io, {
-    chatRepository: new PalaverMongoChatRepository(),
+    chatRepository: memRepo,
     sessionStore: sessionStore,
     sessionKey: sessionKey,
     sessionSecret: sessionSecret
 });
 
-authSetup(passport, new PalaverMongoChatRepository(), io, {
-  sessionKey: sessionKey,
-  sessionStore: sessionStore,
-  sessionSecret: sessionSecret
+authSetup(passport, memRepo, io, {
+    sessionKey: sessionKey,
+    sessionStore: sessionStore,
+    sessionSecret: sessionSecret
 });
 
 server.listen(process.env.PORT || 3000, process.env.IP || "127.0.0.1")

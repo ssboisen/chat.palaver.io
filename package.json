@@ -3,10 +3,8 @@
   "description": "example multi-room chat application build with palaver.io",
   "version": "0.0.1",
   "dependencies": {
-    "palaver.io":
-    "https://github.com/ssboisen/palaver.io/tarball/master",
-    "palaver.io-mongorepo":
-    "https://github.com/ssboisen/palaver.io-mongorepo/tarball/master",
+    "palaver.io": "https://github.com/ssboisen/palaver.io/tarball/master",
+    "palaver.io-mongorepo": "https://github.com/ssboisen/palaver.io-mongorepo/tarball/master",
     "express": "3.x",
     "jade": ">= 0.0.1",
     "socket.io": "0.9.13",
@@ -15,7 +13,8 @@
     "passport.socketio": "0.0.4",
     "connect-flash": "~0.1.0",
     "underscore": "~1.4.3",
-    "connect-mongo": "~0.2.0"
+    "connect-mongo": "~0.2.0",
+    "q": "~0.8.12"
   },
   "repository": {
     "type": "git",
