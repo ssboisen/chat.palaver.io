@@ -11,7 +11,8 @@ var express = require('express'),
     mongoUrl = process.env.MONGOURL || 'mongodb://localhost:27017/palaver',
     MongoStore = require('connect-mongo')(express),
     sessionStore = new MongoStore({
-      url: mongoUrl
+      url: mongoUrl,
+      auto_reconnect: true
     }),
     server = http.createServer(app),
     io = require('socket.io').listen(server),
