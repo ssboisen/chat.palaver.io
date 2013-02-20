@@ -24,6 +24,10 @@ var express = require('express'),
     users = require('mongojs')(mongoUrl).collection('users'),
     chatRepo = new PalaverMongoChatRepository();// Palaver.MemoryChatRepository([], users);
 
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
 // Configuration
 app.configure(function(){
   app.set('views', __dirname + '/views');
