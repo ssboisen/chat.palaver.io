@@ -7,9 +7,9 @@ block content
             div.row-fluid
                 ul.nav.nav-tabs
                     li(ng-repeat="room in rooms", ng-class="{active: selectedRoom==room}" )
-                            div(data-toggle="tab", style="position:relative")
-                                a(href="#", style="text-decoration: none", ng-click="setActiveRoom(room)") {{room.name}}
-                                a.close(href="#", ng-click="leaveRoom(room)") x
+                            div(data-toggle="tab", style="position:relative", ng-click="setActiveRoom(room)")
+                                a(href="#", style="text-decoration: none") {{room.name}}
+                                a.close(href="#", ng-click="leaveRoom(room); $event.stopPropagation()") x
             div.row-fluid
                 div.span10.messages(ng-auto-scroll="selectedRoom.messages")
                     ul
