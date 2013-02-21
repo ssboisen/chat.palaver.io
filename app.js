@@ -23,7 +23,7 @@ var express = require('express'),
     authSetup = require('./lib/authSetup'),
     Palaver = require('palaver.io'),
     users = require('mongojs')(mongoUrl).collection('users'),
-    chatRepo = new PalaverMongoChatRepository();// Palaver.MemoryChatRepository([], users);
+    chatRepo = new PalaverMongoChatRepository();
 
 io.configure(function () { 
   io.set("transports", ["xhr-polling"]); 
@@ -53,6 +53,7 @@ app.configure('production', function(){
 });
 
 app.get('/', utils.ensureAuthenticated, routes.index);
+
 function lookUpUser(username) {
   var deferred = Q.defer();
   users.findOne({ username: username }, utils.makeMongodbResolver(deferred));
