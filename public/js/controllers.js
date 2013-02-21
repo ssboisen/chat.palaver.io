@@ -84,6 +84,24 @@ function RoomController($scope, $timeout, socket, pubsub){
         room.users.push(message.user);
     });
 
+    function doForUserInRoom(username, fn) {
+      _.each($scope.rooms, function(room) {
+        _.each(room.users, function(user) {
+          if(user.username === username) {
+            fn(user);
+          }
+        });
+      });
+    }
+
+    socket.on('user-online', function (username) {
+      doForUserInRoom(username, function (user) { user.online = true; });
+    });
+
+    socket.on('user-offline', function (username) {
+      doForUserInRoom(username, function (user) { user.online = false; });
+    });
+
     socket.on('chat-error', function(error){
         $scope.errorMessage = error.message;
         $timeout(function() {
