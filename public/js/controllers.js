@@ -64,6 +64,11 @@ function RoomController($scope, $timeout, socket, pubsub){
             return r.name === room.name;
         });
 
+        _.each(room.users, function(user) {
+          if(!user.online)
+            user.online = false;
+        });
+
         if(existingRoom)
         {
             var index = $scope.indexOf(existingRoom);

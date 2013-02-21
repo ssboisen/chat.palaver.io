@@ -20,9 +20,14 @@ block content
                             div.right {{ message.date | date:'HH:mm:ss' }}
                         li.text-error(ng-hide="errorMessage==null", style="text-align: center") {{errorMessage}}
                 div.span2.users
-                    ul
-                        li(ng-repeat="user in selectedRoom.users | orderBy:'username'")
-                          {{user.username}} ({{user.online && 'online' || 'offline'}})
+                  ul
+                    div(style="text-decoration:underline") Online
+                    li(ng-repeat="user in selectedRoom.users | filter: { online: true } | orderBy:'username'")
+                        {{user.username}}
+                  ul
+                    div(style="text-decoration:underline") Offline
+                    li(ng-repeat="user in selectedRoom.users | filter: { online: false } | orderBy:'username'")
+                        {{user.username}}
         div.row-fluid(style="margin-top: 40px", ng-controller="MessageController")
             div.span8
                 input(style="width: 90%;", ng-model="message", ui-keyup="{'enter':'sendmsg()'}", autofocus)
