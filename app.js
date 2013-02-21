@@ -99,6 +99,6 @@ authSetup(passport, chatRepo, io, {
   sessionSecret: sessionSecret
 });
 
-server.listen(process.env.PORT || 3000, process.env.IP || "127.0.0.1")
+server.listen(process.env.PORT || 3000)
 
 console.log("Express is listening");
